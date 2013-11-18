@@ -3,14 +3,20 @@ var assert = require("assert"),
 
 describe("ParseTree", function() {
 
-	before(function(){
-	    console.log(new ParseTree());
+	var tree
+
+	beforeEach(function(){
+	    tree = new ParseTree();
 	});
 
+	/*Construtor da root*/
 	describe("constructor", function() {
-		it("should have empty root", function(){
-			assert.ok(true,'Hey jude')
+		it("should have root with no children", function(){
+			assert.equal(tree.root.leftChild, null, 'LeftChild null');
+			assert.equal(tree.root.rightChild, null, 'Rightchild null');
 		});
-		it("should have a chupens name");
+		it("should have no info", function(){
+			assert.equal(tree.root.info, null, 'info null');
+		});
 	});
 });
