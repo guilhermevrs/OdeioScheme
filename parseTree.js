@@ -1,24 +1,19 @@
-  "use strict";
-
-  /*
-    ParseNode
-    Nodo da ParseTree
-  */
-
-
-
-  /*
+    /*
     ParseTree
     Arvore gerada após rodar o parse no texto criado
-  */
-  function ParseTree() {
-    
-  }
+    */
+    var ParseTree = function(args){ 
+      return {
+        name: 'huehaue'
+      };
+    }();
 
-  Cow.prototype = {
-    greets: function(target) {
-      if (!target)
-        throw new Error("missing target");
-      return this.name + " greets " + target;
-    }
-  };
+     /*----------------------------------------------------------
+                                  METHODS
+
+      -------------------------------------------------------------*/
+    ParseTree.prototype.testMethod = function(){
+        return 'oi';
+      };
+
+    module.exports = ParseTree; 
