@@ -1,11 +1,10 @@
 var assert = require("assert"),
-      ParseTree = require("../ParseTree");
+      ParseTree = require("../parseTree.js");
 
 describe("ParseTree", function() {
 
 	before(function(){
 	    console.log(new ParseTree());
-	    console.log(new ParseTree().name);
 	});
 
 	describe("constructor", function() {
