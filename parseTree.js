@@ -23,24 +23,41 @@
           */
           this.root = new ParseNode();
 
-      /*
+          /*
           METHODS
           */
+          this.isValue = function(operand){
+            var typeOp = typeof operand;
+            return typeOp === 'number' || typeOp === 'boolean';
+          }
+
+
           this.executeDualOp = function(expression) {
             if(expression.leftOp === null)
               throw new Error("LeftOp must have a value");
             if(expression.rightOp === null)
               throw new Error("RightOp must have a value");
-            switch(expression.op){
-              case '+':
-              return expression.leftOp + expression.rightOp;
-              break;
-              case '>=':
-              return expression.leftOp >= expression.rightOp;
-              break;
-              default:
-              throw new Error("Operand not defined");
-              break;
+
+            if(!this.isValue(expression.leftOp))
+            {
+              //TODO: Progredir left
+            }
+            else if(!this.isValue(expression.rightOp))
+            {
+              //TODO: Progredir right
+            }
+            else{
+              switch(expression.op){
+                case '+':
+                return expression.leftOp + expression.rightOp;
+                break;
+                case '>=':
+                return expression.leftOp >= expression.rightOp;
+                break;
+                default:
+                throw new Error("Operand not defined in expression");
+                break;
+              }
             }
           };
         };
