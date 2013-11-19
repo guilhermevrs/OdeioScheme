@@ -1,6 +1,10 @@
 var assert = require("assert"),
-      ParseTree = require("../parseTree.js"),
-      DualOperand = require("../DualOperand.js");
+ParseTree = require("../parseTree.js"),
+DualOperand = require("../DualOperand.js");
+
+Object.toType = function(obj) {
+  return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
+}
 
 describe("ParseTree", function() {
 
@@ -9,9 +13,9 @@ describe("ParseTree", function() {
 	var boolExpression;
 
 	beforeEach(function(){
-	    tree = new ParseTree();
-	    intExpression = new DualOperand(1, '+', 1);
-	    boolExpression = new DualOperand(3, '>=', 1);
+		tree = new ParseTree();
+		intExpression = new DualOperand(1, '+', 1);
+		boolExpression = new DualOperand(3, '>=', 1);
 	});
 
 	/*Construtor da root*/

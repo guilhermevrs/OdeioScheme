@@ -31,6 +31,19 @@
             return typeOp === 'number' || typeOp === 'boolean';
           }
 
+          this.advaceExpressionStep = function(operand){
+            //TODO: Implementar
+            /*
+              if(operand instanceof Condition){
+                PROGRIDE CONDICAO
+              }
+              else if(operand instanceof Function){
+                PROGRIDE FUNCTION
+              }
+              (...)
+            */
+          }
+
 
           this.executeDualOp = function(expression) {
             if(expression.leftOp === null)
@@ -40,11 +53,13 @@
 
             if(!this.isValue(expression.leftOp))
             {
-              //TODO: Progredir left
+              expression.leftOp = this.advaceExpressionStep(expression.leftOp);
+              return expression;
             }
             else if(!this.isValue(expression.rightOp))
             {
-              //TODO: Progredir right
+              expression.rightOp = this.advaceExpressionStep(expression.rightOp);
+              return expression;
             }
             else{
               switch(expression.op){
@@ -61,6 +76,5 @@
             }
           };
         };
-
 
         module.exports = ParseTree
