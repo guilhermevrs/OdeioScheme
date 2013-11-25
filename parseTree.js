@@ -31,19 +31,34 @@
             return typeOp === 'number' || typeOp === 'boolean';
           }
 
-          this.advaceExpressionStep = function(operand){
+          this.advanceExpressionStep = function(operand){
             //TODO: Implementar
+            if(operand instanceof IfCommand){
+              return this.executeIf(operand);
+            }
             /*
-              if(operand instanceof Condition){
-                PROGRIDE CONDICAO
-              }
               else if(operand instanceof Function){
                 PROGRIDE FUNCTION
               }
               (...)
             */
-          }
+          };
 
+          this.executeIf = function(ifExpression){
+            if(!(ifExpression instanceof IfCommand))
+              throw  new Error("Expression not an if");
+
+            if(typeof ifExpression.condition === 'number')
+              throw  new Error("Condition cannot be a number");
+
+            if(typeof ifExpression.condition === 'boolean'){
+              return (ifExpression.condition)? ifExpression.trueExec : ifExpression.falseExec;
+            }
+            else{
+              ifExpression.condition = this.advanceExpressionStep(ifExpression.condition);
+              return ifExpression;
+            }
+          }
 
           this.executeDualOp = function(expression) {
             if(expression.leftOp === null)
@@ -53,12 +68,12 @@
 
             if(!this.isValue(expression.leftOp))
             {
-              expression.leftOp = this.advaceExpressionStep(expression.leftOp);
+              expression.leftOp = this.advanceExpressionStep(expression.leftOp);
               return expression;
             }
             else if(!this.isValue(expression.rightOp))
             {
-              expression.rightOp = this.advaceExpressionStep(expression.rightOp);
+              expression.rightOp = this.advanceExpressionStep(expression.rightOp);
               return expression;
             }
             else{
