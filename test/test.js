@@ -1,10 +1,11 @@
-var assert = require("assert"),
-ParseTree = require("../parseTree.js"),
+var assert = require("assert");
+ParseTree = require("../parseTree.js");
 DualOperand = require("../DualOperand.js");
 IfCommand = require("../If.js");
 WhileCommand = require("../While.js");
-Substitution = require("../Substitution.js");
+Fn = require("../Fn.js");
 Sequence = require("../Sequence.js");
+Variable = require("../Variable.js");
 
 Object.toType = function(obj) {
   return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
@@ -93,17 +94,12 @@ describe("ParseTree", function() {
 	})
 */
 	/*Expressões Substituiçao*/
-	describe("Substitution", function(){
-		it("should progress second expression", function(){ //APP1
-			var testExpression = new Substitution(1, ifExpressionInt);
-			testExpression = tree.executeSubstitution(testExpression);
-			assert.equal(testExpression.rightExp, intExpression.rightOp, "has to progress e2");
-		});
-
-		it("should progress first expression", function(){ //APP2
-			var testExpression = new Substitution(ifExpressionInt, ifExpressionInt);
-			testExpression = tree.executeSubstitution(testExpression);
-			assert.equal(testExpression.leftExp, intExpression.leftOp, "has to progress e1");
+	describe("Fn", function(){
+		it("should replace x in body", function(){
+			var dOp = new DualOperand(new Variable('x'), '+', 1);
+			var textFn = new Fn('x', dOp);
+			var rOp = tree.executeFn(textFn, 5);
+			assert.equal(rOp.leftOp, 5, "when x is inside");
 		});
 	});
 
@@ -111,19 +107,19 @@ describe("ParseTree", function() {
  	/*Skip e Sequencia */
 	describe("Sequence", function(){
 		it("should not progress first expression", function(){ //SEQ1 (SKIP) 
-			var testExpression = new Substitution(1, ifExpressionInt);
+			var testExpression = new Sequence(1, ifExpressionInt);
 			testExpression = tree.executeSequence(testExpression);
 			assert.equal(testExpression.rightExp, null, "when e1 is a number");
 		});
 
 		it("should not progress first expression", function(){ //SEQ1 (SKIP)
-			var testExpression = new Substitution(true, ifExpressionInt);
+			var testExpression = new Sequence(true, ifExpressionInt);
 			testExpression = tree.executeSequence(testExpression);
 			assert.equal(testExpression.rightExp, null, "when e1 is a boolean");
 		});
 
 		it("should progress first expression", function(){ //SEQ2
-			var testExpression = new Substitution(ifExpressionInt, ifExpressionInt);
+			var testExpression = new Sequence(ifExpressionInt, ifExpressionInt);
 			testExpression = tree.executeSequence(testExpression);
 			assert.equal(testExpression.leftExp, intExpression.leftOp, "has to progress e1");
 		});
