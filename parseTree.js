@@ -60,7 +60,7 @@
             }
           }
 
-/*
+
           this.executeWhile = function(whileExpression){
             if(!(whileExpression instanceof WhileCommand))
               throw  new Error("Expression not an while");
@@ -77,7 +77,7 @@
               return whileExpression;
              }
           }
-*/
+
 
           this.executeDualOp = function(expression) {
             if(expression.leftOp === null)
@@ -123,10 +123,9 @@
            if(expression.rightExp === null)
               throw new Error("RightExp must have a value");
 
-            if(typeof expression.leftExp === 'number' || typeof expression.leftExp === 'boolean')
+            if(typeof expression.leftExp === 'number' || typeof expression.leftExp === 'boolean' || expression.leftExp === 'skip')
             {
-              expression.leftExp = expression.rightExp;
-              expression.rightExp = null;
+              return expression.rightExp;
             }
 
             if(!this.isValue(expression.leftExp)) //SEQ2
