@@ -2,6 +2,8 @@ var assert = require("assert"),
 ParseTree = require("../parseTree.js"),
 DualOperand = require("../DualOperand.js");
 IfCommand = require("../If.js");
+WhileCommand = require("../While.js");
+Substitution = require("../Substitution.js");
 
 Object.toType = function(obj) {
   return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
@@ -18,6 +20,7 @@ describe("ParseTree", function() {
 		intExpression = new DualOperand(1, '+', 1);
 		boolExpression = new DualOperand(3, '>=', 1);
 		ifExpressionInt = new IfCommand(true,1,6);
+		WhileExpressionInt = new WhileCommand(true,1);
 	});
 
 	/*Construtor da root*/
@@ -69,4 +72,42 @@ describe("ParseTree", function() {
 			assert.equal(ifC.condition, 1, "when is not boolean");
 		});
 	})
+
+
+	/*Comando WHILE*/
+	/*describe("WhileCommand", function(){
+		it("should return e1", function(){
+			var whileC = new WhileCommand(true,1);
+			assert.equal(tree.executeWhile(whileC), 1, "when condition is true");
+		});
+		it("should return e2", function(){
+			var whileC = new WhileCommand(true,1);
+			assert.equal(tree.executeWhile(whileC), 1, "when condition is true");
+		});
+		it("should progress condition", function(){
+			var whileC = new WhileCommand(WhileExpressionInt,1);
+			var whileC = tree.executeWhile(whileC); 
+			assert.equal(whileC.condition, 1, "when is not boolean");
+		});
+	})
+*/
+	/*Expressões de operando dual*/
+	describe("Substitution", function(){
+		it("should progress second expression", function(){ //APP1
+			var testExpression = new Substitution(1, ifExpressionInt);
+			testExpression = tree.executeSubstitution(testExpression);
+			assert.equal(testExpression.rightExp, intExpression.rightOp, "has to progress e2");
+		});
+
+		it("should progress first expression", function(){ //APP2
+			var testExpression = new Substitution(ifExpressionInt, ifExpressionInt);
+			testExpression = tree.executeSubstitution(testExpression);
+			assert.equal(testExpression.leftExp, intExpression.leftOp, "has to progress e1");
+		});
+		
+
+	});
+
+ 
+
 });

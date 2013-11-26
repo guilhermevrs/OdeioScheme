@@ -60,6 +60,25 @@
             }
           }
 
+/*
+          this.executeWhile = function(whileExpression){
+            if(!(whileExpression instanceof WhileCommand))
+              throw  new Error("Expression not an while");
+
+            if(typeof whileExpression.condition === 'number')
+              throw  new Error("Condition cannot be a number");
+
+            if(typeof whileExpression.condition === 'boolean'){
+              if(whileExpression.condition)
+               return whileExpression.trueExec;
+            }
+            else{
+              whileExpression.condition = this.advanceExpressionStep(whileExpression.condition);
+              return whileExpression;
+             }
+          }
+*/
+
           this.executeDualOp = function(expression) {
             if(expression.leftOp === null)
               throw new Error("LeftOp must have a value");
@@ -90,6 +109,39 @@
               }
             }
           };
+
+
+          this.executeSubstitution = function(expression) {
+           if(expression.leftExp === null)
+              throw new Error("LeftExp must have a value");
+           if(expression.rightExp === null)
+              throw new Error("RightExp must have a value");
+
+           if(this.isValue(expression.leftExp) && !this.isValue(expression.rightExp)) //APP1
+            {
+              expression.rightExp = this.advanceExpressionStep(expression.rightExp);
+              return expression;
+            }
+
+
+            if(!this.isValue(expression.leftExp) && !this.isValue(expression.rightExp)) //APP2
+            {
+              expression.leftExp = this.advanceExpressionStep(expression.leftExp);
+              return expression;
+            }
+
+            if(this.isValue(expression.rightExp)) //APP2
+            {
+              throw new Error("Right operand must be an expression, not a number or boolean.");
+            }
+
+
+          };
+
+
+
+
+
         };
 
         module.exports = ParseTree
