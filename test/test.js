@@ -4,6 +4,7 @@ DualOperand = require("../DualOperand.js");
 IfCommand = require("../If.js");
 WhileCommand = require("../While.js");
 Substitution = require("../Substitution.js");
+Sequence = require("../Sequence.js");
 
 Object.toType = function(obj) {
   return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
@@ -91,7 +92,7 @@ describe("ParseTree", function() {
 		});
 	})
 */
-	/*Expressões de operando dual*/
+	/*Expressões Substituiçao*/
 	describe("Substitution", function(){
 		it("should progress second expression", function(){ //APP1
 			var testExpression = new Substitution(1, ifExpressionInt);
@@ -104,10 +105,29 @@ describe("ParseTree", function() {
 			testExpression = tree.executeSubstitution(testExpression);
 			assert.equal(testExpression.leftExp, intExpression.leftOp, "has to progress e1");
 		});
-		
-
 	});
 
  
+ 	/*Skip e Sequencia */
+	describe("Sequence", function(){
+		it("should not progress first expression", function(){ //SEQ1 (SKIP) 
+			var testExpression = new Substitution(1, ifExpressionInt);
+			testExpression = tree.executeSequence(testExpression);
+			assert.equal(testExpression.rightExp, null, "when e1 is a number");
+		});
+
+		it("should not progress first expression", function(){ //SEQ1 (SKIP)
+			var testExpression = new Substitution(true, ifExpressionInt);
+			testExpression = tree.executeSequence(testExpression);
+			assert.equal(testExpression.rightExp, null, "when e1 is a boolean");
+		});
+
+		it("should progress first expression", function(){ //SEQ2
+			var testExpression = new Substitution(ifExpressionInt, ifExpressionInt);
+			testExpression = tree.executeSequence(testExpression);
+			assert.equal(testExpression.leftExp, intExpression.leftOp, "has to progress e1");
+		});
+
+	});
 
 });

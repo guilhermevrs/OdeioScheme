@@ -140,6 +140,28 @@
 
 
 
+          this.executeSequence = function(expression) {
+           if(expression.leftExp === null)
+              throw new Error("LeftExp must have a value");
+           if(expression.rightExp === null)
+              throw new Error("RightExp must have a value");
+
+            if(typeof expression.leftExp === 'number' || typeof expression.leftExp === 'boolean')
+            {
+              expression.leftExp = expression.rightExp;
+              expression.rightExp = null;
+            }
+
+            if(!this.isValue(expression.leftExp)) //SEQ2
+            {
+              expression.leftExp = this.advanceExpressionStep(expression.leftExp);
+              return expression;
+            }
+          };
+
+
+
+
 
 
         };
