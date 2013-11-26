@@ -5,22 +5,29 @@
     	this.x = (typeof x === 'undefined')? null : x;
     	this.body = (typeof body === 'undefined')? null : body;
     	this.apply = function(v){
-    		if(this.body instanceof DualOperand){
-    			return ReplaceInDualOperand(this.body, this.x, v);
+    		return ReplaceObject(this.body, this.x, v);
+    	}
+
+    	function ReplaceObject(obj, x, v){
+    		if(obj instanceof DualOperand){
+    			obj = ReplaceInDualOperand(obj, x, v);
     		}
-    		if(this.body instanceof Sequence){
+    		else if(obj instanceof Variable && obj.id === x){
+    			obj = v;
+    		}
+    		else if(obj instanceof Sequence){
+    			obj = ReplaceInSequence(obj, x, v);
+    		}
+    		else if(obj instanceof IfCommand){
+    			obj = ReplaceInIfCommand(obj, x, v);
+    		}
+    		else if(obj instanceof WhileCommand){
 
     		}
-    		else if(this.body instanceof IfCommand){
-
+    		else if(obj instanceof Fn && obj.x != x){
+    			obj.body = ReplaceObject(obj.body);
     		}
-    		else if(this.body instanceof While){
-
-    		}
-    		else if(this.body instanceof Fn){
-
-    		}
-    		return this.body;
+    		return obj;
     	}
 
     	function ReplaceInDualOperand(dualOperand, x, v){
@@ -29,6 +36,31 @@
     		if(dualOperand.rightOp instanceof Variable && dualOperand.rightOp.id === x)
     			dualOperand.rightOp = v;
     		return dualOperand;
+    	}
+
+    	function ReplaceInIfCommand(ifCommand, x, v){
+    		if(ifCommand.condition instanceof Variable && ifCommand.condition.id === x)
+    			ifCommand.condition = v;
+    		else{
+    			ifCommand.condition = ReplaceObject(ifCommand.condition, x, v);
+    		}
+    		if(ifCommand.trueExec instanceof Variable && ifCommand.trueExec.id === x)
+    			ifCommand.trueExec = v;
+    		else{
+    			ifCommand.trueExec = ReplaceObject(ifCommand.trueExec, x, v);
+    		}
+    		if(ifCommand.falseExec instanceof Variable && ifCommand.falseExec.id === x)
+    			ifCommand.falseExec = v;
+    		else{
+    			ifCommand.falseExec = ReplaceObject(ifCommand.falseExec, x, v);
+    		}
+    		return ifCommand;
+    	}
+
+    	function ReplaceInSequence(seq, x, v){
+    		seq.leftExp = ReplaceObject(seq.leftExp, x, v);
+    		seq.rightExp = ReplaceObject(seq.rightExp, x, v);
+    		return seq;
     	}
     };
 

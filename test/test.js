@@ -101,6 +101,35 @@ describe("ParseTree", function() {
 			var rOp = tree.executeFn(textFn, 5);
 			assert.equal(rOp.leftOp, 5, "when x is inside");
 		});
+		it("should NOT replace x in body", function(){
+			var varY = new Variable('y');
+			var dOp = new DualOperand(varY, '+', 1);
+			var textFn = new Fn('x', dOp);
+			var rOp = tree.executeFn(textFn, 5);
+			assert.equal(rOp.leftOp, varY, "when x is NOT inside");
+		});
+		it("should progress to an if", function(){
+			var textFn = new Fn('x', ifExpressionInt);
+			var f = tree.executeFn(textFn, 5);
+			assert.equal(f, ifExpressionInt, "when the body is an if");
+		});
+		it("should progress to a Fn", function(){
+			var textFn = new Fn('x', ifExpressionInt);
+			var newTextFn = new Fn('y', textFn);
+			var f = tree.executeFn(newTextFn, 5);
+			assert.equal(f, textFn, "when the body is an Fn");
+		});
+		it("should progress to a Sequence", function(){
+			var varY = new Variable('y');
+			var dOp = new DualOperand(varY, '+', 1);
+			var d2Op = new DualOperand(2, '+', varY);
+			var seq = new Sequence(dOp, d2Op);
+			var textFn = new Fn('y', seq);
+			var r = tree.executeFn(textFn, 5);
+
+			assert.equal(r.leftExp.leftOp, 5, "and replace left expression of it");
+			assert.equal(r.rightExp.rightOp, 5, "and replace right expression of it");
+		});
 	});
 
  
