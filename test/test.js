@@ -1,12 +1,12 @@
 var assert = require("assert");
+Variable = require("../Variable.js");
+DualOperand = require("../DualOperand.js");
 Common = require("../Common.js");
 ParseTree = require("../parseTree.js");
-DualOperand = require("../DualOperand.js");
 IfCommand = require("../IfCommand.js");
 WhileCommand = require("../While.js");
 Fn = require("../Fn.js");
 Sequence = require("../Sequence.js");
-Variable = require("../Variable.js");
 
 Object.toType = function(obj) {
   return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
@@ -54,7 +54,7 @@ describe("ParseTree", function() {
 		});
 		it("should progress second operand", function(){
 			var testExpression = new DualOperand(1, '+', ifExpressionInt);
-			testExpression = tree.executeDualOp(testExpression);
+			testExpression = testExpression.step();
 			assert.equal(testExpression.rightOp, intExpression.rightOp, "has to progress e2");
 		});
 	});
@@ -63,61 +63,53 @@ describe("ParseTree", function() {
 	describe("IfCommand", function(){
 		it("should return e1", function(){
 			var ifC = new IfCommand(true,1,6);
-			assert.equal(tree.executeIf(ifC), 1, "when condition is true");
+			assert.equal(ifC.step(), 1, "when condition is true");
 		});
 		it("should return e2", function(){
 			var ifC = new IfCommand(false,1,6);
-			assert.equal(tree.executeIf(ifC), 6, "when condition is false");
+			assert.equal(ifC.step(), 6, "when condition is false");
 		});
 		it("should progress condition", function(){
 			var ifC = new IfCommand(ifExpressionInt,1,6);
-			var ifC = tree.executeIf(ifC);
+			var ifC = ifC.step();
 			assert.equal(ifC.condition, 1, "when is not boolean");
 		});
-	})
+	});
 
+	describe('Common', function(){
+		it("should replace x in body", function(){
+			var dOp = new DualOperand(new Variable('x'), '+', 1);
+			var c = new Common;
+			var rOp = c.replaceObj(dOp, 'x', 5);
+			assert.equal(rOp.leftOp, 5, "when x is inside");
+		});
+	});
 
-	/*Comando WHILE*/
-	/*describe("WhileCommand", function(){
-		it("should return e1", function(){
-			var whileC = new WhileCommand(true,1);
-			assert.equal(tree.executeWhile(whileC), 1, "when condition is true");
-		});
-		it("should return e2", function(){
-			var whileC = new WhileCommand(true,1);
-			assert.equal(tree.executeWhile(whileC), 1, "when condition is true");
-		});
-		it("should progress condition", function(){
-			var whileC = new WhileCommand(WhileExpressionInt,1);
-			var whileC = tree.executeWhile(whileC); 
-			assert.equal(whileC.condition, 1, "when is not boolean");
-		});
-	})
-*/
 	/*Expressões Substituiçao*/
 	describe("Fn", function(){
 		it("should replace x in body", function(){
 			var dOp = new DualOperand(new Variable('x'), '+', 1);
 			var textFn = new Fn('x', dOp);
-			var rOp = tree.executeFn(textFn, 5);
+
+			var rOp = textFn.step(5);
 			assert.equal(rOp.leftOp, 5, "when x is inside");
 		});
 		it("should NOT replace x in body", function(){
 			var varY = new Variable('y');
 			var dOp = new DualOperand(varY, '+', 1);
 			var textFn = new Fn('x', dOp);
-			var rOp = tree.executeFn(textFn, 5);
+			var rOp = textFn.step(5);
 			assert.equal(rOp.leftOp, varY, "when x is NOT inside");
 		});
 		it("should progress to an if", function(){
 			var textFn = new Fn('x', ifExpressionInt);
-			var f = tree.executeFn(textFn, 5);
+			var f = textFn.step(5);
 			assert.equal(f, ifExpressionInt, "when the body is an if");
 		});
 		it("should progress to a Fn", function(){
 			var textFn = new Fn('x', ifExpressionInt);
 			var newTextFn = new Fn('y', textFn);
-			var f = tree.executeFn(newTextFn, 5);
+			var f = newTextFn.step(5);
 			assert.equal(f, textFn, "when the body is an Fn");
 		});
 		it("should progress to a Sequence", function(){
@@ -126,7 +118,7 @@ describe("ParseTree", function() {
 			var d2Op = new DualOperand(2, '+', varY);
 			var seq = new Sequence(dOp, d2Op);
 			var textFn = new Fn('y', seq);
-			var r = tree.executeFn(textFn, 5);
+			var r = textFn.step(5);
 
 			assert.equal(r.leftExp.leftOp, 5, "and replace left expression of it");
 			assert.equal(r.rightExp.rightOp, 5, "and replace right expression of it");
