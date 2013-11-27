@@ -1,7 +1,8 @@
 var assert = require("assert");
+Common = require("../Common.js");
 ParseTree = require("../parseTree.js");
 DualOperand = require("../DualOperand.js");
-IfCommand = require("../If.js");
+IfCommand = require("../IfCommand.js");
 WhileCommand = require("../While.js");
 Fn = require("../Fn.js");
 Sequence = require("../Sequence.js");
@@ -39,16 +40,16 @@ describe("ParseTree", function() {
 	/*Expressões de operando dual*/
 	describe("DualOperand", function(){
 		it("should add two numbers", function(){
-			var res = tree.executeDualOp(intExpression);
+			var res = intExpression.step();
 			assert.equal(res, 2, '1 + 1 = 2');
 		});
 		it("should compare two numbers", function(){
-			var res = tree.executeDualOp(boolExpression);
+			var res = boolExpression.step();
 			assert.equal(res, true, '3 >= 1 = true');
 		});
 		it("should progress first operand", function(){
 			var testExpression = new DualOperand(ifExpressionInt, '+', 1);
-			testExpression = tree.executeDualOp(testExpression);
+			testExpression = testExpression.step();
 			assert.equal(testExpression.leftOp, intExpression.leftOp, "has to progress e1");
 		});
 		it("should progress second operand", function(){
