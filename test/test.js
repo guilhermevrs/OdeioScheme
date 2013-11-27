@@ -130,23 +130,23 @@ describe("ParseTree", function() {
 	describe("Sequence", function(){
 		it("should skip first expression", function(){ //SKIP 
 			var testExpression = new Sequence('skip', ifExpressionInt);
-			testExpression = tree.executeSequence(testExpression);
+			testExpression = testExpression.step();
 			assert.equal(testExpression.rightExp, ifExpressionInt.leftOp, "when e1 is skip");
 		});
 		it("should not progress first expression", function(){ //SEQ1
 			var testExpression = new Sequence(1, ifExpressionInt);
-			testExpression = tree.executeSequence(testExpression);
+			testExpression = testExpression.step();
 			assert.equal(testExpression.rightExp, null, "when e1 is a number");
 		});
 		it("should not progress first expression", function(){ //SEQ1
 			var testExpression = new Sequence(true, ifExpressionInt);
-			testExpression = tree.executeSequence(testExpression);
+			testExpression = testExpression.step();
 			assert.equal(testExpression.rightExp, null, "when e1 is a boolean");
 		});
 
 		it("should progress first expression", function(){ //SEQ2
 			var testExpression = new Sequence(ifExpressionInt, ifExpressionInt);
-			testExpression = tree.executeSequence(testExpression);
+			testExpression = testExpression.step();
 			assert.equal(testExpression.leftExp, ifExpressionInt.trueExec, "has to progress e1");
 		});
 
