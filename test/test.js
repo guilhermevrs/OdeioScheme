@@ -76,22 +76,24 @@ describe("ParseTree", function() {
 
 
 	/*Comando WHILE*/
-	/*describe("WhileCommand", function(){
+	describe("WhileCommand", function(){
 		it("should return e1", function(){
 			var whileC = new WhileCommand(true,1);
-			assert.equal(tree.executeWhile(whileC), 1, "when condition is true");
+			assert.equal(tree.executeWhile(whileC), true, "when condition is true");
 		});
-		it("should return e2", function(){
-			var whileC = new WhileCommand(true,1);
-			assert.equal(tree.executeWhile(whileC), 1, "when condition is true");
+
+		it("should return skip", function(){
+			var whileC = new WhileCommand(false,1);
+			assert.equal(tree.executeWhile(whileC), 'skip', "when condition is false");
 		});
-		it("should progress condition", function(){
-			var whileC = new WhileCommand(WhileExpressionInt,1);
-			var whileC = tree.executeWhile(whileC); 
-			assert.equal(whileC.condition, 1, "when is not boolean");
+
+		it("should progress e1", function(){
+			var whileC = new WhileCommand(ifExpressionInt,1);
+			var whileC = tree.executeWhile(whileC);
+			assert.equal(whileC.condition, true, "has to progress e1");
 		});
 	})
-*/
+
 	/*Expressões Substituiçao*/
 	describe("Substitution", function(){
 		it("should progress second expression", function(){ //APP1

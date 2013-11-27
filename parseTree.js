@@ -62,6 +62,8 @@
 
 
           this.executeWhile = function(whileExpression){
+
+            
             if(!(whileExpression instanceof WhileCommand))
               throw  new Error("Expression not an while");
 
@@ -71,11 +73,14 @@
             if(typeof whileExpression.condition === 'boolean'){
               if(whileExpression.condition)
                return whileExpression.trueExec;
+              else
+                return 'skip';
             }
-            else{
+            else if(!this.isValue(whileExpression.condition)){
               whileExpression.condition = this.advanceExpressionStep(whileExpression.condition);
               return whileExpression;
              }
+
           }
 
 
