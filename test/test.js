@@ -4,6 +4,7 @@ DualOperand = require("../DualOperand.js");
 Common = require("../Common.js");
 ParseTree = require("../parseTree.js");
 IfCommand = require("../IfCommand.js");
+WhileCommand = require("../WhileCommand.js");
 Fn = require("../Fn.js");
 FnExec = require("../FnExec.js");
 Sequence = require("../Sequence.js");
@@ -74,6 +75,27 @@ describe("ParseTree", function() {
 			var ifC = new IfCommand(ifExpressionInt,1,6);
 			var ifC = ifC.step();
 			assert.equal(ifC.condition, 1, "when is not boolean");
+		});
+	});
+
+	/*Comando WHILE*/
+	describe("WhileCommand", function(){
+		it("should return e1", function(){
+			var whileC = new WhileCommand(true, 1);
+			console.log(whileC.step());
+			assert.equal(whileC.step(), 1, "when condition is true");
+		});
+
+		it("should return skip", function(){
+			var whileC = new WhileCommand(false, 1);
+			console.log(whileC.condition);
+			assert.equal(whileC.step(), 'skip', "when condition is false");
+		});
+
+		it("should progress condition", function(){
+			var whileC = new WhileCommand(ifExpressionInt,1);
+			var whileC = whileC.step();
+			assert.equal(whileC.condition, true, "has to progress e1");
 		});
 	});
 
