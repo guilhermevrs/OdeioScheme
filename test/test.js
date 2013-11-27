@@ -12,7 +12,7 @@ Let = require("../Let.js");
 LetRec = require("../LetRec.js");
 
 Object.toType = function(obj) {
-  return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
+	return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
 }
 
 describe("ParseTree", function() {
@@ -26,17 +26,6 @@ describe("ParseTree", function() {
 		intExpression = new DualOperand(1, '+', 1);
 		boolExpression = new DualOperand(3, '>=', 1);
 		ifExpressionInt = new IfCommand(true,1,6);
-	});
-
-	/*Construtor da root*/
-	describe("constructor", function() {
-		it("should have root with no children", function(){
-			assert.equal(tree.root.leftChild, null, 'LeftChild null');
-			assert.equal(tree.root.rightChild, null, 'Rightchild null');
-		});
-		it("should have no info", function(){
-			assert.equal(tree.root.info, null, 'info null');
-		});
 	});
 
 	/*Expressões de operando dual*/
@@ -142,9 +131,9 @@ describe("ParseTree", function() {
 		});
 	});
 
- 
- 	/*Skip e Sequencia */
-	describe("Sequence", function(){
+
+/*Skip e Sequencia */
+describe("Sequence", function(){
 		it("should skip first expression", function(){ //SKIP 
 			var testExpression = new Sequence('skip', ifExpressionInt);
 			testExpression = testExpression.step();
@@ -169,41 +158,59 @@ describe("ParseTree", function() {
 
 	});
 
-	describe("Let", function(){
-		it("should replace body", function(){
-			var dOp = new DualOperand(new Variable('x'), '+', 4);
-			var letOp = new Let('x', 5, dOp);
-			assert.equal(letOp.step().leftOp, 5, "when it finds reference to variable");
-		});
-
-		it("should progress before replace", function(){
-			var dOp = new DualOperand(new Variable('x'), '+', 4);
-			var letOp = new Let('x', intExpression, dOp);
-			assert.equal(letOp.step().step().leftOp, 2, "when it finds reference to variable");
-		});
+describe("Let", function(){
+	it("should replace body", function(){
+		var dOp = new DualOperand(new Variable('x'), '+', 4);
+		var letOp = new Let('x', 5, dOp);
+		assert.equal(letOp.step().leftOp, 5, "when it finds reference to variable");
 	});
 
-	describe("LetRec", function(){
-		it("should replace NOTHING", function(){
-			var dOp = new DualOperand(1, '+', 3);
-			var fnOp = new Fn('x', 5);
-			var letOp = new LetRec('x', fnOp, dOp);
-			assert.equal(letOp.step(), dOp, "when there is no free variables");
-		});
-
-		it("should replace with letrec", function(){
-			var dOp = new DualOperand(1, '+', 3);
-			var fnOp = new Fn('x', dOp);
-			var fnExecOp = new FnExec(fnOp, 4)
-			var letOp = new LetRec('x', fnOp, fnExecOp);
-
-			var step = letOp.step();
-			assert(step instanceof FnExec, 'must be a FnExec');
-			step = step.step();
-			assert(step instanceof DualOperand, 'must be a DualOperand');
-			step = step.step();
-			assert.equal(step, 4, 'must be 4');
-		});
+	it("should progress before replace", function(){
+		var dOp = new DualOperand(new Variable('x'), '+', 4);
+		var letOp = new Let('x', intExpression, dOp);
+		assert.equal(letOp.step().step().leftOp, 2, "when it finds reference to variable");
 	});
+});
+
+describe("LetRec", function(){
+	it("should replace NOTHING", function(){
+		var dOp = new DualOperand(1, '+', 3);
+		var fnOp = new Fn('x', 5);
+		var letOp = new LetRec('x', fnOp, dOp);
+		assert.equal(letOp.step(), dOp, "when there is no free variables");
+	});
+
+	it("should replace with letrec", function(){
+		var dOp = new DualOperand(1, '+', 3);
+		var fnOp = new Fn('x', dOp);
+		var fnExecOp = new FnExec(fnOp, 4)
+		var letOp = new LetRec('x', fnOp, fnExecOp);
+
+		var step = letOp.step();
+		assert(step instanceof FnExec, 'must be a FnExec');
+		step = step.step();
+		assert(step instanceof DualOperand, 'must be a DualOperand');
+		step = step.step();
+		assert.equal(step, 4, 'must be 4');
+	});
+});
+
+it("should return the exp", function(){
+	assert.equal(tree.execute(5), 5, "when exp is a value");
+});
+
+it("should execute exp till the ent", function(){
+	var dOp = new DualOperand(1, '+', 3);
+	var fnOp = new Fn('x', 5);
+	var letOp = new LetRec('x', fnOp, dOp);
+	assert.equal(tree.execute(letOp), 4, "when exp is a LetRec");
+});
+
+it("should execute exp till the ent", function(){
+	var dOp = new DualOperand(new Variable('x'), '+', 1);
+	var textFn = new Fn('x', dOp);
+	var execOp = new FnExec(textFn, 5);
+	assert.equal(tree.execute(execOp), 6, "when exp is a LetRec");
+});
 
 });
