@@ -5,8 +5,10 @@ Common = require("../Common.js");
 ParseTree = require("../parseTree.js");
 IfCommand = require("../IfCommand.js");
 Fn = require("../Fn.js");
+FnExec = require("../FnExec.js");
 Sequence = require("../Sequence.js");
 Let = require("../Let.js");
+LetRec = require("../LetRec.js");
 
 Object.toType = function(obj) {
   return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
@@ -162,6 +164,27 @@ describe("ParseTree", function() {
 			var dOp = new DualOperand(new Variable('x'), '+', 4);
 			var letOp = new Let('x', intExpression, dOp);
 			assert.equal(letOp.step().step().leftOp, 2, "when it finds reference to variable");
+		});
+	});
+
+	describe("LetRec", function(){
+		it("should replace NOTHING", function(){
+			var dOp = new DualOperand(1, '+', 3);
+			var fnOp = new Fn('x', 5);
+			var letOp = new LetRec('x', fnOp, dOp);
+			assert.equal(letOp.step(), dOp, "when there is no free variables");
+		});
+
+		it("should replace with letrec", function(){
+			var dOp = new DualOperand(1, '+', 3);
+			var fnOp = new Fn('x', dOp);
+			var fnExecOp = new FnExec(fnOp, 4)
+			var letOp = new LetRec('x', fnOp, fnExecOp);
+
+			var step = letOp.step();
+			console.log(step);
+			step = letOp.step();
+			console.log(step);
 		});
 	});
 
