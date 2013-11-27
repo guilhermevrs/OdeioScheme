@@ -22,9 +22,9 @@ var Common = function(){
 		else if(obj instanceof IfCommand){
 			obj = this.replaceInIfCommand(obj, x, v);
 		}
-		else if(obj instanceof WhileCommand){
+		/*else if(obj instanceof WhileCommand){
 
-		}
+		}*/
 		else if(obj instanceof Fn && obj.x != x){
 			obj.body = this.replaceObj(obj.body);
 		}

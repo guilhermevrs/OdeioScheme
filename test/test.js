@@ -4,9 +4,9 @@ DualOperand = require("../DualOperand.js");
 Common = require("../Common.js");
 ParseTree = require("../parseTree.js");
 IfCommand = require("../IfCommand.js");
-WhileCommand = require("../While.js");
 Fn = require("../Fn.js");
 Sequence = require("../Sequence.js");
+Let = require("../Let.js");
 
 Object.toType = function(obj) {
   return ({}).toString.call(obj).match(/\s([a-z|A-Z]+)/)[1].toLowerCase();
@@ -23,7 +23,6 @@ describe("ParseTree", function() {
 		intExpression = new DualOperand(1, '+', 1);
 		boolExpression = new DualOperand(3, '>=', 1);
 		ifExpressionInt = new IfCommand(true,1,6);
-		WhileExpressionInt = new WhileCommand(true,1);
 	});
 
 	/*Construtor da root*/
@@ -150,6 +149,20 @@ describe("ParseTree", function() {
 			assert.equal(testExpression.leftExp, ifExpressionInt.trueExec, "has to progress e1");
 		});
 
+	});
+
+	describe("Let", function(){
+		it("should replace body", function(){
+			var dOp = new DualOperand(new Variable('x'), '+', 4);
+			var letOp = new Let('x', 5, dOp);
+			assert.equal(letOp.step().leftOp, 5, "when it finds reference to variable");
+		});
+
+		it("should progress before replace", function(){
+			var dOp = new DualOperand(new Variable('x'), '+', 4);
+			var letOp = new Let('x', intExpression, dOp);
+			assert.equal(letOp.step().step().leftOp, 2, "when it finds reference to variable");
+		});
 	});
 
 });
