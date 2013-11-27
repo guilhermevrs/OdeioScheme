@@ -4,7 +4,7 @@ DualOperand = require("../DualOperand.js");
 Common = require("../Common.js");
 ParseTree = require("../parseTree.js");
 IfCommand = require("../IfCommand.js");
-WhileCommand = require("../While.js");
+WhileCommand = require("../WhileCommand.js");
 Fn = require("../Fn.js");
 Sequence = require("../Sequence.js");
 
