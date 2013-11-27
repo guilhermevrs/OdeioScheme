@@ -182,9 +182,11 @@ describe("ParseTree", function() {
 			var letOp = new LetRec('x', fnOp, fnExecOp);
 
 			var step = letOp.step();
-			console.log(step);
-			step = letOp.step();
-			console.log(step);
+			assert(step instanceof FnExec, 'must be a FnExec');
+			step = step.step();
+			assert(step instanceof DualOperand, 'must be a DualOperand');
+			step = step.step();
+			assert.equal(step, 4, 'must be 4');
 		});
 	});
 
