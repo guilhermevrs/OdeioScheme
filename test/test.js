@@ -80,15 +80,9 @@ describe("ParseTree", function() {
 
 	/*Comando WHILE*/
 	describe("WhileCommand", function(){
-		it("should return e1", function(){
-			var whileC = new WhileCommand(true, 1);
-			console.log(whileC.step());
-			assert.equal(whileC.step(), 1, "when condition is true");
-		});
-
 		it("should return skip", function(){
 			var whileC = new WhileCommand(false, 1);
-			console.log(whileC.condition);
+			whileC = whileC.step();
 			assert.equal(whileC.step(), 'skip', "when condition is false");
 		});
 
